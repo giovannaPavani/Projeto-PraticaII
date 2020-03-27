@@ -1,48 +1,40 @@
-create table MReceitas
-(
-    idReceita int identity primary key,
-    idUsuario int not null,
-    data Smalldatetime not null,
-    nome varchar(40),
-    quantia money not null,
-    ADD CONSTRAINT FK_idUsuario FOREIGN KEY (idUsuario)
-    REFERENCES MUsuarios(idUsuario)
-)
-
-create table MDespesas
-(
-    idDespesa int identity primary key,
-    idUsuario int not null,
-    data Smalldatetime not null,
-    nome varchar(40),
-    idTag varchar(20),
-    descricao varchar(60),
-    lugar varchar(25),
-    quantia money not null,
-    idCompartilhamento int,
-    ADD CONSTRAINT FK_idUsuario FOREIGN KEY (idUsuario)
-    REFERENCES MUsuarios(idUsuario),
-    ADD CONSTRAINT FK_idTag FOREIGN KEY (idTag)
-    REFERENCES MTags(idTag),
-    ADD CONSTRAINT FK_idCompartilhamento FOREIGN KEY (idCompartilhamento)
-    REFERENCES MCompartilhamento(idComp)
-)
-
-create table MCompartilhamentos
-(
-    idComp int identity primary key,
-    idUsuario int not null,
-    idDespesa int not null,
-    ADD CONSTRAINT FK_idUsuario FOREIGN KEY (idUsuario)
-    REFERENCES MUsuarios(idUsuario),
-    ADD CONSTRAINT FK_idDespesa FOREIGN KEY (idDespesa)
-    REFERENCES MDespesas(idDespesa),
-)
-
 create table MTags
 (
     idTag int identity primary key,
     nome varchar(25) not null
+)
+
+create table MAssuntos
+(
+    idAssunto int identity primary key,
+    assunto varchar(50) not null
+)
+
+create table MTips
+(
+    idTips int identity primary key,
+    idAssunto int,
+    dica varchar(200),
+    CONSTRAINT FK_idAssuntoT FOREIGN KEY (idAssunto)
+    REFERENCES MAssuntos(idAssunto)
+)
+
+create table MVideos
+(
+    idVideo int identity primary key,
+    idAssunto int not null,
+    video varchar(250) not null,
+    CONSTRAINT FK_idAssuntoV FOREIGN KEY (idAssunto)
+    REFERENCES MAssuntos(idAssunto)
+)
+
+create table MArtigos
+(
+    idArtigo int identity primary key,
+    idAssunto int not null,
+    artigo varchar(300),
+    CONSTRAINT FK_idAssuntoA FOREIGN KEY (idAssunto)
+    REFERENCES MAssuntos(idAssunto)
 )
 
 create table MUsuarios
@@ -63,48 +55,55 @@ create table MUsuarios
     saldo money
 )
 
+create table MReceitas
+(
+    idReceita int identity primary key,
+    idUsuario int not null,
+    data Smalldatetime not null,
+    nome varchar(40),
+    quantia money not null,
+    CONSTRAINT FK_idUsuario FOREIGN KEY (idUsuario)
+    REFERENCES MUsuarios(idUsuario)
+)
+
+create table MDespesas
+(
+    idDespesa int identity primary key,
+    idUsuario int not null,
+    data Smalldatetime not null,
+    nome varchar(40),
+    idTag int,
+    descricao varchar(60),
+    lugar varchar(25),
+    quantia money not null,
+    idCompartilhamento int,
+    CONSTRAINT FK_idUsuarioDesp FOREIGN KEY (idUsuario)
+    REFERENCES MUsuarios(idUsuario),
+    CONSTRAINT FK_idTagDesp FOREIGN KEY (idTag)
+    REFERENCES MTags(idTag),
+    CONSTRAINT FK_idCompartilhamento FOREIGN KEY (idCompartilhamento)
+    REFERENCES MCompartilhamentos(idCompartilhamento)
+)
+
+create table MCompartilhamentos
+(
+    idCompartilhamento int identity primary key,
+	codCompartilhamento int,
+    idUsuario int not null,
+    CONSTRAINT FK_idUsuarioComp FOREIGN KEY (idUsuario)
+    REFERENCES MUsuarios(idUsuario)
+)
+
 create table MAmigos
 (
     idAmigos int identity primary key,
     idAmigo1 int not null,
     idAmigo2 int not null,
-    ADD CONSTRAINT FK_idUsuario FOREIGN KEY (idAmigo1)
+    CONSTRAINT FK_idUsuarioA1 FOREIGN KEY (idAmigo1)
     REFERENCES MUsuarios(idUsuario),
-    ADD CONSTRAINT FK_idUsuario FOREIGN KEY (idAmigo2)
+    CONSTRAINT FK_idUsuarioA2 FOREIGN KEY (idAmigo2)
     REFERENCES MUsuarios(idUsuario)
 )
 
-create table MAssuntos
-(
-    idAssunto int identity primary key,
-    assunto varchar(50) not null
-)
-
-create table MTips
-(
-    idTips int identity primary key,
-    idAssunto int not null,
-    dica varchar(200),
-    ADD CONSTRAINT FK_idAssunto FOREIGN KEY (idAssunto)
-    REFERENCES MUsuarios(idAssunto)
-)
-
-create table MVideos
-(
-    idVideo int identity primary key,
-    idAssunto int not null,
-    video varchar(250) not null,
-    ADD CONSTRAINT FK_idAssunto FOREIGN KEY (idAssunto)
-    REFERENCES MUsuarios(idAssunto)
-)
-
-create table MArtigos
-(
-    idArtigo int identity primary key,
-    idAssunto int not null,
-    artigo varchar(300),
-    ADD CONSTRAINT FK_idAssunto FOREIGN KEY (idAssunto)
-    REFERENCES MUsuarios(idAssunto)
-)
-
-
+-- util: 
+-- alter table MTips ALTER COLUMN idAssunto int null
